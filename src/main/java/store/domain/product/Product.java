@@ -11,4 +11,16 @@ public class Product {
         this.price = price;
         this.promotionName = promotionName;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public String getPromotionName() {
+        return promotionName;
+    }
 }
