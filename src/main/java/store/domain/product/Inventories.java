@@ -19,16 +19,6 @@ public class Inventories {
         this.inventories = addNoPromotionInventoryIfAbsent(promotionInventories);
     }
 
-    private List<Inventory> addNoPromotionInventoryIfAbsent(final List<Inventory> promotionInventories) {
-        List<Inventory> newInventories = new ArrayList<>(inventories);
-
-        promotionInventories.stream()
-                .filter(this::hasNotNonPromotionProduct)
-                .map(this::createNonPromotionInventory)
-                .forEach(newInventories::add);
-        return newInventories;
-    }
-
     public CurrentInventoriesResponse toCurrentInventoriesResponse() {
         List<CurrentInventoryResponse> currentInventories = inventories.stream()
                 .map(Inventory::toCurrentInventoryResponse)
@@ -40,6 +30,16 @@ public class Inventories {
         return inventories.stream()
                 .filter(inventory -> inventory.findNoPromotionProduct().isEmpty())
                 .toList();
+    }
+
+    private List<Inventory> addNoPromotionInventoryIfAbsent(final List<Inventory> promotionInventories) {
+        List<Inventory> newInventories = new ArrayList<>(inventories);
+
+        promotionInventories.stream()
+                .filter(this::hasNotNonPromotionProduct)
+                .map(this::createNonPromotionInventory)
+                .forEach(newInventories::add);
+        return newInventories;
     }
 
     private boolean hasNotNonPromotionProduct(final Inventory inventory) {
