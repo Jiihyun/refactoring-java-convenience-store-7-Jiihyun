@@ -6,6 +6,8 @@ import store.domain.product.dto.response.CurrentInventoryResponse;
 import java.util.ArrayList;
 import java.util.List;
 
+import static store.exception.ExceptionMessage.OUT_OF_STOCK;
+
 public class Inventories {
 
     private List<Inventory> inventories;
@@ -14,10 +16,10 @@ public class Inventories {
         this.inventories = inventories;
     }
 
-    public void addNonPromotionInventory() {
-        List<Inventory> promotionInventories = getPromotionInventories();
-        this.inventories = addNoPromotionInventoryIfAbsent(promotionInventories);
-    }
+//    public void addNonPromotionInventory() {
+//        List<Inventory> promotionInventories = getPromotionInventories();
+//        this.inventories = addNoPromotionInventoryIfAbsent(promotionInventories);
+//    }
 
     public CurrentInventoriesResponse toCurrentInventoriesResponse() {
         List<CurrentInventoryResponse> currentInventories = inventories.stream()
@@ -26,27 +28,47 @@ public class Inventories {
         return new CurrentInventoriesResponse(currentInventories);
     }
 
+    public List<Inventory> findProductsByName(final String name) {
+        return inventories.stream()
+                .filter(inventory -> inventory.existsByName(name))
+                .toList();
+    }
+
+    public void validateTotalQuantity(final String name, final int quantity) {
+        int productTotalQuantity = getProductTotalQuantity(name);
+        if (productTotalQuantity < quantity) {
+            throw new IllegalArgumentException(OUT_OF_STOCK.getMessage());
+        }
+    }
+
+   private int getProductTotalQuantity(final String name) {
+    return inventories.stream()
+            .filter(inventory -> inventory.existsByName(name))
+            .mapToInt(Inventory::getQuantity)
+            .sum();
+}
+
     private List<Inventory> getPromotionInventories() {
         return inventories.stream()
                 .filter(inventory -> inventory.findNoPromotionProduct().isEmpty())
                 .toList();
     }
 
-    private List<Inventory> addNoPromotionInventoryIfAbsent(final List<Inventory> promotionInventories) {
-        List<Inventory> newInventories = new ArrayList<>(inventories);
+//    private List<Inventory> addNoPromotionInventoryIfAbsent(final List<Inventory> promotionInventories) {
+//        List<Inventory> newInventories = new ArrayList<>(inventories);
+//        for (Inventory inventory : newInventories) {
+//            String productName = inventory.getProduct().getName();
+//            if()
+//        }
+//
+////        promotionInventories.stream()
+////                .filter(this::hasNotNonPromotionProduct)
+////                .map(this::createNonPromotionInventory)
+////                .forEach(newInventories::add);
+//        return newInventories;
+//    }
 
-        promotionInventories.stream()
-                .filter(this::hasNotNonPromotionProduct)
-                .map(this::createNonPromotionInventory)
-                .forEach(newInventories::add);
-        return newInventories;
-    }
-
-    private boolean hasNotNonPromotionProduct(final Inventory inventory) {
-        return inventory.findNoPromotionProduct().isEmpty();
-    }
-
-    private Inventory createNonPromotionInventory(Inventory promotionInventory) {
+    public Inventory createNonPromotionInventory(Inventory promotionInventory) {
         Product promotionProduct = promotionInventory.getProduct();
         Product nonPromotionProduct = promotionProduct.createNonPromotionProduct();
         return new Inventory(nonPromotionProduct, 0);

@@ -2,6 +2,7 @@ package store.domain.product;
 
 import store.util.StoreFileReader;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class InventoriesLoader {
@@ -12,8 +13,17 @@ public class InventoriesLoader {
                 .map(this::convertToInventory)
                 .toList();
         Inventories inventories = new Inventories(inventoriesWithoutNonPromotion);
-        inventories.addNonPromotionInventory();
-        return inventories;
+        List<Inventory> finalInventories = new ArrayList<>();
+        for (Inventory inventory : inventoriesWithoutNonPromotion) {
+            String productName = inventory.getProduct().getName();
+            List<Inventory> products = inventories.findProductsByName(productName);
+            finalInventories.add(inventory);
+            if (products.size() == 1 && products.getFirst().getProduct().hasPromotion()) {
+                finalInventories.add(inventories.createNonPromotionInventory(inventory));
+            }
+
+        }
+        return new Inventories(finalInventories);
     }
 
     private Inventory convertToInventory(String[] inventoryData) {

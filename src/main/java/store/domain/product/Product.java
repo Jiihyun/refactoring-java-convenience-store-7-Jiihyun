@@ -18,6 +18,10 @@ public class Product {
         return NON_PROMOTION.equals(promotionName);
     }
 
+    public boolean hasPromotion() {
+        return !NON_PROMOTION.equals(promotionName);
+    }
+
     public Product createNonPromotionProduct() {
         return new Product(
                 name,
