@@ -1,6 +1,8 @@
 package store.view;
 
 import camp.nextstep.edu.missionutils.Console;
+import store.domain.product.dto.request.CartRequest;
+import store.util.StringParser;
 
 import java.util.regex.Pattern;
 
@@ -11,10 +13,10 @@ public class InputView {
 
     private static final String ORDER_PRODUCT_MESSAGE = "구매하실 상품명과 수량을 입력해 주세요. (예: [사이다-2],[감자칩-1])";
 
-    public String readMenuAndQuantity() {
+    public CartRequest readMenuAndQuantity() {
         String input = getValidatedInput(ORDER_PRODUCT_MESSAGE);
         Validator.validateInputFormat(input);
-        return input;
+        return StringParser.parseCartProducts(input);
     }
 
     private String getValidatedInput(String message) {
