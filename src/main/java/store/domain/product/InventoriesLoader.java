@@ -8,10 +8,12 @@ public class InventoriesLoader {
 
     public Inventories load() {
         List<String[]> inventoriesData = StoreFileReader.readProducts();
-        List<Inventory> inventories = inventoriesData.stream()
+        List<Inventory> inventoriesWithoutNonPromotion = inventoriesData.stream()
                 .map(this::convertToInventory)
                 .toList();
-        return new Inventories(inventories);
+        Inventories inventories = new Inventories(inventoriesWithoutNonPromotion);
+        inventories.addNonPromotionInventory();
+        return inventories;
     }
 
     private Inventory convertToInventory(String[] inventoryData) {
