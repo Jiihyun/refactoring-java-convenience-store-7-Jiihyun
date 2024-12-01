@@ -11,7 +11,8 @@ import static store.exception.ExceptionMessage.INVALID_FORMAT;
 
 public class InputView {
 
-    private static final String ORDER_PRODUCT_MESSAGE = "구매하실 상품명과 수량을 입력해 주세요. (예: [사이다-2],[감자칩-1])";
+    private static final String NEW_LINE = System.lineSeparator();
+    private static final String ORDER_PRODUCT_MESSAGE = NEW_LINE + "구매하실 상품명과 수량을 입력해 주세요. (예: [사이다-2],[감자칩-1])";
 
     public CartRequest readMenuAndQuantity() {
         String input = getValidatedInput(ORDER_PRODUCT_MESSAGE);

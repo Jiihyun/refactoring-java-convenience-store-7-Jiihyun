@@ -11,6 +11,9 @@ public class OutputView {
             """;
     private static final String DISPLAY_PRODUCTS_FORMAT = "- %s %,d원 %s %s%n";
 
+    public void printError(String error) {
+        System.out.println(error);
+    }
 
     public void printInventories(final CurrentInventoriesResponse response) {
         System.out.println(PRINT_INVENTORIES_MSG);
