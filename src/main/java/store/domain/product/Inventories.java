@@ -3,6 +3,7 @@ package store.domain.product;
 import java.util.List;
 
 import static store.exception.ExceptionMessage.OUT_OF_STOCK;
+import static store.exception.ExceptionMessage.PRODUCT_NOT_EXISTS;
 
 public class Inventories {
 
@@ -13,9 +14,11 @@ public class Inventories {
     }
 
     public List<Inventory> findProductsByName(final String name) {
-        return inventories.stream()
+        List<Inventory> inventories = this.inventories.stream()
                 .filter(inventory -> inventory.existsByName(name))
                 .toList();
+        validateInventoryExists(inventories);
+        return inventories;
     }
 
     public void validateTotalQuantity(final String name, final int quantity) {
@@ -40,5 +43,11 @@ public class Inventories {
                 .filter(inventory -> inventory.existsByName(name))
                 .mapToInt(Inventory::getQuantity)
                 .sum();
+    }
+
+    private void validateInventoryExists(final List<Inventory> inventories) {
+        if (inventories.isEmpty()) {
+            throw new IllegalArgumentException(PRODUCT_NOT_EXISTS.getMessage());
+        }
     }
 }
