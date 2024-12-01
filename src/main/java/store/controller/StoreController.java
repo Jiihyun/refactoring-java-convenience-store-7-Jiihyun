@@ -27,7 +27,7 @@ public class StoreController {
 
     public void run() {
         Inventories inventories = initialDataLoader.load();
-        CurrentInventoriesResponse currentInventoriesResponse = inventories.toCurrentInventoriesResponse();
+        CurrentInventoriesResponse currentInventoriesResponse = CurrentInventoriesResponse.from(inventories);
         outputView.printInventories(currentInventoriesResponse);
         Cart cart = retryOnInvalidInput(() -> createCart(inventories));
     }
