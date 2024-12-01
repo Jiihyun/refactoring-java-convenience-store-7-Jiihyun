@@ -18,6 +18,10 @@ public class Inventory {
         return product;
     }
 
+    public String getProductName() {
+        return product.getName();
+    }
+
     public int getQuantity() {
         return quantity;
     }
